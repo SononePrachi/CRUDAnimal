@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Animal</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            padding: 20px;
+        }
+        form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        textarea {
+            height: 150px; 
+        }
+        .center-text {
+            text-align: center; /* Center align text */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5 mb-4 center-text">Edit Animal</h1>
+
+        
+        <form action="/animal/update" method="post" th:object="${animal}" class="mb-4">
+            
+            <input type="hidden" th:field="*{id}" />
+
+            <!-- Input fields for editing animal data -->
+            <div class="mb-3">
+                <label for="name" class="form-label">Name:</label>
+                <input type="text" th:field="*{name}" class="form-control" id="name" />
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">Category:</label>
+                <select th:field="*{category}" class="form-select" id="category">
+                    <option value="Mammals" th:selected="${animal.category == 'Mammals'}">Mammals</option>
+                    <option value="Birds" th:selected="${animal.category == 'Birds'}">Birds</option>
+                    <option value="Fish" th:selected="${animal.category == 'Fish'}">Fish</option>
+                    <option value="Reptiles" th:selected="${animal.category == 'Reptiles'}">Reptiles</option>
+                    <option value="Invertebrates" th:selected="${animal.category == 'Invertebrates'}">Invertebrates</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description:</label>
+                <textarea th:field="*{description}" class="form-control" id="description"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="lifeExpectancy" class="form-label">Life Expectancy:</label>
+                <select th:field="*{lifeExpectancy}" class="form-select" id="lifeExpectancy" >
+                    <option value="1-5" th:selected="${animal.lifeExpectancy == '1-5'}">1-5 years</option>
+                    <option value="5-10" th:selected="${animal.lifeExpectancy == '5-10'}">5-10 years</option>
+                    <option value="10-15" th:selected="${animal.lifeExpectancy == '10-15'}">10-15 years</option>
+                    <option value="15-20" th:selected="${animal.lifeExpectancy == '15-20'}">15-20 years</option>
+                    <option value="20+" th:selected="${animal.lifeExpectancy == '20+'}">20+ years</option>
+                 </select>
+            </div>
+
+            
+            <button type="submit" class="btn btn-primary">Update Animal</button>
+        </form>
+    </div>
+
+    
+</body>
+</html>
