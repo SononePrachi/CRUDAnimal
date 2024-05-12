@@ -20,11 +20,13 @@ public class Animal {
 	
 	@Column(unique = true)
 	private String name;
+	
 	private String category;
 	
-	@Lob
-	private byte[] image;
+	private String image;
+	
 	private String description;
+	
 	private String lifeExpectancy;
 	
 	
@@ -47,10 +49,10 @@ public class Animal {
 		this.category = category;
 	}
 	
-	public byte[] getImage() {
+	public String getImage() {
 		return image;
 	}
-	public void setImage(byte[] image) {
+	public void setImage(String image) {
 		this.image = image;
 	}
 	public String getDescription() {
@@ -67,9 +69,10 @@ public class Animal {
 	}
 	@Override
 	public String toString() {
-		return "Animal [id=" + id + ", name=" + name + ", category=" + category + ", image=" + Arrays.toString(image)
-				+ ", description=" + description + ", lifeExpectancy=" + lifeExpectancy + "]";
+		return "Animal [id=" + id + ", name=" + name + ", category=" + category + ", image=" + image + ", description="
+				+ description + ", lifeExpectancy=" + lifeExpectancy + "]";
 	}
+	
 	
 	
 	

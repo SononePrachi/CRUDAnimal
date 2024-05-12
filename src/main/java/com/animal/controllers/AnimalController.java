@@ -20,15 +20,19 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.animal.entities.Animal;
 import com.animal.service.AnimalService;
+import com.animal.service.FileStorageService;
+
 
 @Controller
 public class AnimalController {
 	
-	@Value("${uploadDir}")
-	private String uploadFolder;
+	
+	@Autowired
+    private FileStorageService fileStorageService;
 	
 	@Autowired
 	private AnimalService service;
+	
 	
 	@GetMapping("/animal/home")
 	public String homePage(Model m)
@@ -41,22 +45,29 @@ public class AnimalController {
 	}
 	
 	@PostMapping("/animal/addAnimal")
-	public String addAnimal(@ModelAttribute Animal animal,RedirectAttributes redirectAttributes)
+	public String addAnimal(@RequestParam("image") MultipartFile file,
+            @RequestParam("name") String name,
+            @RequestParam("category") String category,
+            @RequestParam("description") String description,
+            @RequestParam("lifeExpectancy") String lifeExpectancy,RedirectAttributes redirectAttributes)
 	{
 		String status;
-		System.out.println(animal);
+		
 		try {
-			
-//			if (!imageFile.isEmpty()) 
-//			{
-//				byte[] imageData = imageFile.getBytes();
-//				animal.setImage(imageData); 
-//			}
+			String storedFileName = fileStorageService.storeFile(file);
+			Animal animal = new Animal();
+            animal.setName(name);
+            animal.setCategory(category);
+            animal.setDescription(description);
+            animal.setLifeExpectancy(lifeExpectancy);
+            animal.setImage(storedFileName);
+			System.out.println("animal is = "+animal);
 		    status=service.addAnimal(animal);
 		    redirectAttributes.addFlashAttribute("successMessage", "Animal added Successfully");
 		    
 	    }catch(Exception e) {
 	    	status=(e.getMessage());
+	    	System.out.println(status);
 	    	redirectAttributes.addFlashAttribute("errorMessage", "Something went wrong");
 	    }
 		redirectAttributes.addFlashAttribute("status",status);
@@ -74,10 +85,32 @@ public class AnimalController {
 	}
 	
 	@RequestMapping(path="/animal/update",method=RequestMethod.POST)
-    public String updateAnimal(@ModelAttribute Animal animal,RedirectAttributes redirectAttributes)
+    public String updateAnimal(@RequestParam("image") MultipartFile file,
+    		@RequestParam("id") Long id,
+            @RequestParam("name") String name,
+            @RequestParam("category") String category,
+            @RequestParam("description") String description,
+            @RequestParam("lifeExpectancy") String lifeExpectancy,RedirectAttributes redirectAttributes)
 	{
-        String s=service.updateAnimal(animal); 
-        redirectAttributes.addFlashAttribute("successMessage", s);
+		String status;
+		
+		try {
+			String storedFileName = fileStorageService.storeFile(file);
+			Animal animal = new Animal();
+			animal.setId(id);
+            animal.setName(name);
+            animal.setCategory(category);
+            animal.setDescription(description);
+            animal.setLifeExpectancy(lifeExpectancy);
+            animal.setImage(storedFileName);
+			System.out.println("animal is = "+animal);
+			String s=service.updateAnimal(animal); 
+			redirectAttributes.addFlashAttribute("successMessage", s);
+		}catch(Exception e) {
+		    	status=(e.getMessage());
+		    	System.out.println(status);
+		    	redirectAttributes.addFlashAttribute("errorMessage", "Something went wrong");
+		}
         return "redirect:/animal/home"; 
     }
 	

@@ -29,7 +29,7 @@
         <h1 class="mt-5 mb-4 center-text">Edit Animal</h1>
 
         
-        <form action="/animal/update" method="post" th:object="${animal}" class="mb-4">
+        <form action="/animal/update" method="post" enctype="multipart/form-data" th:object="${animal}" class="mb-4">
             
             <input type="hidden" th:field="*{id}" />
 
@@ -45,7 +45,7 @@
                     <option value="Birds" th:selected="${animal.category == 'Birds'}">Birds</option>
                     <option value="Fish" th:selected="${animal.category == 'Fish'}">Fish</option>
                     <option value="Reptiles" th:selected="${animal.category == 'Reptiles'}">Reptiles</option>
-                    <option value="Invertebrates" th:selected="${animal.category == 'Invertebrates'}">Invertebrates</option>
+                    <option value="Amphibians" th:selected="${animal.category == 'Amphibians'}">Amphibians</option>
                 </select>
             </div>
             <div class="mb-3">
@@ -62,7 +62,12 @@
                     <option value="20+" th:selected="${animal.lifeExpectancy == '20+'}">20+ years</option>
                  </select>
             </div>
-
+			<div class="mb-3">
+				<label for="description" class="form-label">Image:</label>
+                <img th:src="@{/uploads/{imageName}(imageName=${animal.image})}" style="max-width: 100px; max-height: 100px;" />
+				<input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+       			<small class="form-text text-muted">Please select an image file (JPEG, PNG, GIF).</small>
+			</div>
             
             <button type="submit" class="btn btn-primary">Update Animal</button>
         </form>

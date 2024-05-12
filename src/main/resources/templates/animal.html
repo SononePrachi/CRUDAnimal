@@ -33,7 +33,7 @@
             <option value="Birds">Birds</option>
             <option value="Fish">Fish</option>
             <option value="Reptiles">Reptiles</option>
-            <option value="Invertebrates">Invertebrates</option>
+            <option value="Amphibians">Amphibians</option>
         </select>
         </div>
     </div>
@@ -57,14 +57,14 @@
                     <option value="Birds">Birds</option>
                     <option value="Fish">Fish</option>
                     <option value="Reptiles">Reptiles</option>
-                    <option value="Invertebrates">Invertebrates</option>
+                    <option value="Amphibians">Amphibians</option>
                 </select>
             </div>
-       <!--      <div class="mb-3">
+            <div class="mb-3">
         		<label for="image" class="form-label">Image:</label>
         		<input type="file" class="form-control" id="image" name="image" accept="image/*" required>
        			<small class="form-text text-muted">Please select an image file (JPEG, PNG, GIF).</small>
-    		</div> --> 
+    		</div> 
             <div class="mb-3">
                 <label for="description" class="form-label">Description:</label>
                 <textarea class="form-control" id="description" name="description" required></textarea>
@@ -114,7 +114,7 @@
                     <td th:text="${animal.name}"></td>
                     <td th:text="${animal.category}"></td>
                       <td>
-                		<img th:src="'data:image/jpeg;base64,' + ${#strings.toString(animal.image)}" style="max-width: 100px; max-height: 100px;" />
+                		<img th:src="@{/uploads/{imageName}(imageName=${animal.image})}" style="max-width: 100px; max-height: 100px;" />
             		</td>
                     <td th:text="${animal.description}"></td>
                     <td th:text="${animal.lifeExpectancy}"></td> 
@@ -176,8 +176,9 @@
                 method: 'DELETE'
             })
             .then(response => {
+            	location.reload();
             	alert('Deleted Successfully');
-                location.reload(); 
+                 
             })
             .catch(error => {
                 console.error('Error deleting animal:', error);
