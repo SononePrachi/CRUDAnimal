@@ -33,7 +33,7 @@ public class AnimalController {
 	@Autowired
 	private AnimalService service;
 	
-	
+	//to getting the home page with all animal's list
 	@GetMapping("/animal/home")
 	public String homePage(Model m)
 	{
@@ -44,46 +44,57 @@ public class AnimalController {
 		return "animal";
 	}
 	
-	@PostMapping("/animal/addAnimal")
+	//File object of Multipartfile Type is used to get the uploaded file.
+	//@RequestParam annotation is used to bind request parameters from the HTTP request to method parameters in your controller methods
+	//to add animal
+	 @PostMapping("/animal/addAnimal")
 	public String addAnimal(@RequestParam("image") MultipartFile file,
-            @RequestParam("name") String name,
-            @RequestParam("category") String category,
-            @RequestParam("description") String description,
-            @RequestParam("lifeExpectancy") String lifeExpectancy,RedirectAttributes redirectAttributes)
+			@RequestParam("name") String name,
+			@RequestParam("category") String category,
+			@RequestParam("description") String description,
+			@RequestParam("lifeExpectancy") String lifeExpectancy,
+			RedirectAttributes redirectAttributes)//is use to redirect success or error message
 	{
-		String status;
+		    
 		
 		try {
-			String storedFileName = fileStorageService.storeFile(file);
+			String storedFileName = fileStorageService.storeFile(file);//to store uploaded file in our folder
+			//for storing all fields in a animal object
 			Animal animal = new Animal();
-            animal.setName(name);
+            
+			animal.setName(name);
             animal.setCategory(category);
             animal.setDescription(description);
             animal.setLifeExpectancy(lifeExpectancy);
             animal.setImage(storedFileName);
 			System.out.println("animal is = "+animal);
-		    status=service.addAnimal(animal);
-		    redirectAttributes.addFlashAttribute("successMessage", "Animal added Successfully");
 		    
-	    }catch(Exception e) {
-	    	status=(e.getMessage());
-	    	System.out.println(status);
+			service.addAnimal(animal);
+		    
+		    //When you want to pass data to another request and ensure that the data is available only once (i.e., during the redirect)
+		    redirectAttributes.addFlashAttribute("successMessage", "Animal added Successfully");
+		
+	   }catch(Exception e) {
+	    	
 	    	redirectAttributes.addFlashAttribute("errorMessage", "Something went wrong");
-	    }
-		redirectAttributes.addFlashAttribute("status",status);
+	 }
+		
 		return "redirect:/animal/home";	
 	}
 	
-	@RequestMapping("/animal/edit/{id}")
+	 //to show edit page for update specific animal
+	 @RequestMapping("/animal/edit/{id}")
 	public String editAnimalShow(@PathVariable Long id, Model model)
 	{	
 		System.out.println("id="+id);
+		//to get specific id information
 		Animal animal = service.getAnimalInfoById(id);
 		System.out.println(animal);
         model.addAttribute("animal", animal);
         return "edit";
 	}
 	
+	 //to update animal for specific id
 	@RequestMapping(path="/animal/update",method=RequestMethod.POST)
     public String updateAnimal(@RequestParam("image") MultipartFile file,
     		@RequestParam("id") Long id,
@@ -92,7 +103,7 @@ public class AnimalController {
             @RequestParam("description") String description,
             @RequestParam("lifeExpectancy") String lifeExpectancy,RedirectAttributes redirectAttributes)
 	{
-		String status;
+		
 		
 		try {
 			String storedFileName = fileStorageService.storeFile(file);
@@ -107,14 +118,14 @@ public class AnimalController {
 			String s=service.updateAnimal(animal); 
 			redirectAttributes.addFlashAttribute("successMessage", s);
 		}catch(Exception e) {
-		    	status=(e.getMessage());
-		    	System.out.println(status);
+		    	
 		    	redirectAttributes.addFlashAttribute("errorMessage", "Something went wrong");
 		}
         return "redirect:/animal/home"; 
     }
 	
 	
+	//to delete animal of specific id
 	@DeleteMapping("/animal/delete/{id}")
     public String deleteAnimal(@PathVariable Long id,Model redirectAttributes) {
 	
@@ -123,6 +134,7 @@ public class AnimalController {
             return "redirect:/animal/home";
     }
 	
+	//to sort animal list by Category-wise
 	@GetMapping("/animal/sortCategory")
     public String sortAnimalsByCategory(@RequestParam String category, Model model) {
         List<Animal> animalList = service.getAnimalsSortedByCategory(category);
@@ -131,7 +143,7 @@ public class AnimalController {
         return "animal";
     }
 	
-	
+	//to sort animal list by Alphabetically
 	@GetMapping("/animal/sortAlphabetically")
     public String sortAnimalsAlphabetically(Model model) {
         List<Animal> animalList = service.getAnimalsSortedAlphabetically();
@@ -140,7 +152,7 @@ public class AnimalController {
     }
 	
 	
-
+    //to sort animal list by LifeExpectancyRange
 	@GetMapping("/animal/sortByLifeExpectancyRange")
     public String sortAnimalsLifeExpectency(Model model) {
         List<Animal> animalList = service.getAnimalsSortedLifeExpectency();

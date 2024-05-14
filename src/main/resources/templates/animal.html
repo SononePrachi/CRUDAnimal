@@ -44,7 +44,7 @@
     <hr>
 		<h2>Add New Animal</h2>
 		
-        <form action="/animal/addAnimal" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+        <form action="/animal/addAnimal" method="post"  enctype="multipart/form-data" onsubmit="return validateForm()">
             <div class="mb-3">
                 <label for="name" class="form-label">Name:</label>
                 <input type="text" class="form-control" id="name" name="name" required>
@@ -193,7 +193,7 @@
         } else {
             window.location.href = '/animal/home';
         }
-    }
+    } 
 
     function sortAnimalsAlphabetically() {
         window.location.href = '/animal/sortAlphabetically';
