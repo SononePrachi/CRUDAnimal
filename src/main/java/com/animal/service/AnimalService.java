@@ -1,11 +1,12 @@
 package com.animal.service;
 
-import java.util.List;
-import java.util.Optional;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.animal.dao.AnimalDao;
@@ -23,11 +24,12 @@ public class AnimalService {
 		return "Successfully save";
 	}
 	
-	public List<Animal> getAllAnimals()
-	{
-		List<Animal> l=dao.findAll();
-		return l;
-	}
+	
+	public Page<Animal> getAllAnimals(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return dao.findAll(pageable);
+    }
+	
 	
 	public Animal getAnimalInfoById(Long id)
 	{
@@ -47,21 +49,21 @@ public class AnimalService {
 		dao.deleteById(id);
 		return "Deleted Successfully";
 	}
-	
-	
-	public List<Animal> getAnimalsSortedByCategory(String category) {
-		return dao.getAnimalsSortedByCategory(category);
-	}
 
-	public List<Animal> getAnimalsSortedAlphabetically() {
-		return dao.findAllByOrderByName();
-	}
-	
-	public List<Animal> getAnimalsSortedLifeExpectency() {
-		return dao.findAllOrderByLifeExpectancyRange();
-	}
+	public Page<Animal> getAnimalsSortedByCategory(String category, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return dao.findByCategoryOrderByCategory(category, pageable);
+    }
 
-	
+    public Page<Animal> getAnimalsSortedAlphabetically(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return dao.findAllByOrderByNameAsc(pageable);
+    }
+
+    public Page<Animal> getAnimalsSortedLifeExpectency(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return dao.findAllByOrderByLifeExpectancyAsc(pageable);
+    }
 	
 	
 }

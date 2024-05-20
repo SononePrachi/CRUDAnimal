@@ -63,10 +63,12 @@
                  </select>
             </div>
 			<div class="mb-3">
-				<label for="description" class="form-label">Image:</label>
+			    <label for="description" class="form-label">Image:</label>
                 <img th:src="@{/uploads/{imageName}(imageName=${animal.image})}" style="max-width: 100px; max-height: 100px;" />
-				<input type="file" class="form-control" id="image" name="image" accept="image/*" required>
-       			<small class="form-text text-muted">Please select an image file (JPEG, PNG, GIF).</small>
+                <input type="file" class="form-control mt-3" id="image" name="image" accept="image/*">
+                <input type="hidden" name="existingImage" th:value="${animal.image}">
+                <small class="form-text text-muted">Please select an image file (JPEG, PNG, GIF).</small>
+			
 			</div>
             
             <button type="submit" class="btn btn-primary">Update Animal</button>
