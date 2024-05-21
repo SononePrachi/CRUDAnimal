@@ -61,7 +61,7 @@ public class AnimalController {
 			RedirectAttributes redirectAttributes)//is use to redirect success or error message
 	{
 		    
-		
+		System.out.println("File = "+file);
 		try {
 			String storedFileName = fileStorageService.storeFile(file);//to store uploaded file in our folder
 			//for storing all fields in a animal object
@@ -80,7 +80,7 @@ public class AnimalController {
 		    redirectAttributes.addFlashAttribute("successMessage", "Animal added Successfully");
 		
 	   }catch(Exception e) {
-	    	
+	    	System.out.println("Exception is = "+e);
 	    	redirectAttributes.addFlashAttribute("errorMessage", "Something went wrong");
 	 }
 		
