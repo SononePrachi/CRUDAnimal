@@ -29,7 +29,7 @@
         <h1 class="mt-5 mb-4 center-text">Edit Animal</h1>
 
         
-        <form action="/animal/update" method="post" enctype="multipart/form-data" th:object="${animal}" class="mb-4">
+        <form action="/animal/save" method="post" enctype="multipart/form-data" th:object="${animal}" class="mb-4">
             
             <input type="hidden" th:field="*{id}" />
 
@@ -40,12 +40,9 @@
             </div>
             <div class="mb-3">
                 <label for="category" class="form-label">Category:</label>
-                <select th:field="*{category}" class="form-select" id="category">
-                    <option value="Mammals" th:selected="${animal.category == 'Mammals'}">Mammals</option>
-                    <option value="Birds" th:selected="${animal.category == 'Birds'}">Birds</option>
-                    <option value="Fish" th:selected="${animal.category == 'Fish'}">Fish</option>
-                    <option value="Reptiles" th:selected="${animal.category == 'Reptiles'}">Reptiles</option>
-                    <option value="Amphibians" th:selected="${animal.category == 'Amphibians'}">Amphibians</option>
+                <select th:field="*{categoryId}" class="form-select" id="categoryId">
+                    <option value="">Select</option>
+                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" th:selected="${animal.categoryId != null && animal.categoryId == categoryId}"></option>
                 </select>
             </div>
             <div class="mb-3">
@@ -54,12 +51,9 @@
             </div>
             <div class="mb-3">
                 <label for="lifeExpectancy" class="form-label">Life Expectancy:</label>
-                <select th:field="*{lifeExpectancy}" class="form-select" id="lifeExpectancy" >
-                    <option value="1-5" th:selected="${animal.lifeExpectancy == '1-5'}">1-5 years</option>
-                    <option value="5-10" th:selected="${animal.lifeExpectancy == '5-10'}">5-10 years</option>
-                    <option value="10-15" th:selected="${animal.lifeExpectancy == '10-15'}">10-15 years</option>
-                    <option value="15-20" th:selected="${animal.lifeExpectancy == '15-20'}">15-20 years</option>
-                    <option value="20+" th:selected="${animal.lifeExpectancy == '20+'}">20+ years</option>
+                <select th:field="*{lifeExpectancyId}" class="form-select" id="lifeExpectancyId" >
+                     <option value="">Select</option>
+                <option th:each="lifeExpectancy : ${lifeExpectancies}" th:value="${lifeExpectancy.id}" th:text="${lifeExpectancy.range}" th:selected="${animal.lifeExpectancyId != null && animal.lifeExpectancyId == lifeExpectancyId}"></option>
                  </select>
             </div>
 			<div class="mb-3">

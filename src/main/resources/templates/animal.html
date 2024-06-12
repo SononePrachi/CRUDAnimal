@@ -39,14 +39,22 @@
 	    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 	</div>
 	<div class="text-center">
+	
+	
 	<h3>Animal Project</h3>
 	</div>
     <div class="my-4">
         <button class="btn btn-primary" onclick="showAddAnimal()">Add New</button>
-        <button class="btn btn-primary" onclick="sortAnimalsAlphabetically()">Sort by Alphabetically</button>
-        <button class="btn btn-primary" onclick="sortAnimalsLifeExpectancy()">Sort by Life Expectancy</button>
+        
+        
+        <button class="btn btn-primary" onclick="sortAnimals('name')">Sort by Alphabetically</button>
+        
+        
+        <button class="btn btn-primary" onclick="sortAnimals('lifeExpectancy')">Sort by Life Expectancy</button>
+        
     	<div class="row my-4">
         <label for="categorySelect" class="col-sm-2 col-form-label">Sort by Category :</label>
+        
         <div class="col-sm-4">
         <select id="categorySelect" class="form-select" onchange="sortAnimalsByCategory(this.value)">
             <option value="">Select Category</option>
@@ -65,20 +73,17 @@
     <hr>
 		<h2>Add New Animal</h2>
 		
-        <form action="/animal/addAnimal" method="post"  enctype="multipart/form-data" onsubmit="return validateForm()">
+        <form action="/animal/save" method="post"  enctype="multipart/form-data" onsubmit="return validateForm()">
+            
             <div class="mb-3">
                 <label for="name" class="form-label">Name:</label>
                 <input type="text" class="form-control" id="name" name="name" required>
             </div>
             <div class="mb-3">
                 <label for="category" class="form-label">Category:</label>
-                <select class="form-select" id="category" name="category" required>
+                <select class="form-select" id="categoryId" name="categoryId" required>
                     <option value="">Select</option>
-                    <option value="Mammals">Mammals</option>
-                    <option value="Birds">Birds</option>
-                    <option value="Fish">Fish</option>
-                    <option value="Reptiles">Reptiles</option>
-                    <option value="Amphibians">Amphibians</option>
+                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}" ></option>
                 </select>
             </div>
             <div class="mb-3">
@@ -92,13 +97,9 @@
             </div>
             <div class="mb-3">
                 <label for="lifeExpectancy" class="form-label">Life Expectancy:</label>
-                <select class="form-select" id="lifeExpectancy" name="lifeExpectancy" required>
-                    <option value="">Select</option>
-                    <option value="1-5">1-5 years</option>
-                    <option value="5-10">5-10 years</option>
-                    <option value="10-15">10-15 years</option>
-                    <option value="15-20">15-20 years</option>
-                    <option value="20+">20+ years</option>
+                <select class="form-select" id="lifeExpectancyId" name="lifeExpectancyId" required>
+                  <option value="">Select</option>
+                <option th:each="lifeExpectancy : ${lifeExpectancies}" th:value="${lifeExpectancy.id}" th:text="${lifeExpectancy.range}"></option>
                 </select>
             </div>
             <div class="mb-3">
@@ -133,12 +134,12 @@
             <tbody>
                 <tr th:each="animal : ${allAnimalsList}">
                     <td th:text="${animal.name}"></td>
-                    <td th:text="${animal.category}"></td>
+                    <td th:text="${animal.categoryName}"></td>
                       <td>
                 		<img th:src="@{/uploads/{imageName}(imageName=${animal.image})}" style="max-width: 100px; max-height: 100px;" />
             		</td>
                     <td th:text="${animal.description}"></td>
-                    <td th:text="${animal.lifeExpectancy}"></td> 
+                    <td th:text="${animal.lifeExpectancyName}"></td> 
                     <td>
                         <a th:href="@{/animal/edit/{id}(id=${animal.id})}" class="btn btn-primary">Edit</a>
                         <button type="button" class="btn btn-danger" th:onclick="'deleteAnimal(\'' + ${animal.id} + '\')'">Delete</button>
@@ -147,18 +148,30 @@
             </tbody>
         </table>
         <div class="d-flex justify-content-between align-items-center mt-3">
+        <!--  Displays the current page number of the total number of pages.-->
             <span class="pageNo">Page: <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span></span>
             <ul class="pagination">
+            <!-- Disables the link if the current page is the first page.-->
                 <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <!--  Links to the previous page.-->
                     <a class="page-link" th:href="@{/animal/home(page=${currentPage - 1}, size=${pageSize})}">Previous</a>
                 </li>
+                
+                 <!--Iterates over the sequence from 0 to the total number of pages minus 1.-->
+                <!--Highlights the current page.-->
                 <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                    th:classappend="${i == currentPage} ? 'active'">
+                   th:classappend="${i == currentPage} ? 'active'">
+                   <!--Links to the specific page.-->
+                   <!--Displays the page number (1-based index)-->
                     <a class="page-link" th:href="@{/animal/home(page=${i}, size=${pageSize})}" th:text="${i + 1}"></a>
                 </li>
+                
+                 <!--Disables the link if the current page is the last page.-->
                 <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <!--Links to the next page.-->
                     <a class="page-link" th:href="@{/animal/home(page=${currentPage + 1}, size=${pageSize})}">Next</a>
                 </li>
+                
             </ul>
         </div>
     </div>
@@ -170,8 +183,12 @@
 <script>
 
 	function showAddAnimal() {
+		//is responsible for displaying a hidden HTML element 
+		//This line accesses the HTML element with the id addNewAnimalDiv 
+		//in the current document and assigns it to the variable divElement.
 	    var divElement = document.getElementById('addNewAnimalDiv');
 	    if (divElement) {
+	    	//making it visible
 	        divElement.style.display = 'block';
 	    }
 	    generateCaptcha();
@@ -180,7 +197,9 @@
 	function generateCaptcha(){
 		var num1 = Math.floor(Math.random() * 10) + 1;
 		var num2 = Math.floor(Math.random() * 10) + 1;
+		//innerText This property sets or returns the text content of the specified node.
 		document.getElementById('captchaQuestion').innerText = num1 + ' + ' + num2;
+		//.value This property sets or returns the value of the specified attribute of the element
 		document.getElementById('captchaResult').value = num1 + num2; // Store the correct answer
 	}
 	
@@ -208,10 +227,14 @@
 
     function deleteAnimal(animalId) {
         if (confirm('Are you sure you want to delete this animal?')) {
+        	//The fetch function is used to send a request to the server.
             fetch('/animal/delete/' + animalId, {
+            	//http delete method
                 method: 'DELETE'
             })
+            //then(response => {...}) is a promise handler that executes if the fetch request is successful.
             .then(response => {
+            	//refreshes the current web page to reflect the deletion.
             	location.reload();
             	alert('Deleted Successfully');
                  
@@ -225,19 +248,17 @@
 
     function sortAnimalsByCategory(category) {
         if (category) {
-            window.location.href = '/animal/sortCategory?category=' + category;
+            window.location.href = '/animal/home?category=' + category;
         } else {
             window.location.href = '/animal/home';
         }
     } 
 
-    function sortAnimalsAlphabetically() {
-        window.location.href = '/animal/sortAlphabetically';
+    function sortAnimals(sortBy) {
+    	 window.location.href = '/animal/home?sortBy=' + sortBy;
     }
 
-    function sortAnimalsLifeExpectancy() {
-        window.location.href = '/animal/sortByLifeExpectancyRange';
-    }
+    
 </script>
 </body>
 </html>

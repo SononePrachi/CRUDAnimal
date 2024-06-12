@@ -21,10 +21,13 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     private Path fileStorageLocation;
 
+    
     @PostConstruct
     public void init() {
         try {
+        	//This is a variable used to store the location where uploaded files will be stored.
             fileStorageLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
+            //this will create directory that is Specified in fileStorageLocation
             Files.createDirectories(fileStorageLocation);
         } catch (IOException ex) {
             throw new RuntimeException("Could not create the directory where the uploaded files will be stored.", ex);
