@@ -41,12 +41,7 @@ public class AnimalController {
     @Autowired
     private LifeExpectancyService lifeExpectancyService;
 	
-	//Pagination: The Page<Animal> object from the service call handles the pagination.
-	//It contains methods like getContent(), getTotalPages(), and getTotalElements().
-	//to getting the home page with all animal's list
-	//@RequestParam(defaultValue = "0") int page: This binds the page request parameter to the page variable. 
-	//If the parameter is not provided in the request, it defaults to 0.
-	//size of the page (number of items per page).
+	
 	@GetMapping("/animal/home")
     public String homePage( @RequestParam(required = false) String category,
             				@RequestParam(defaultValue = "name") String sortBy,
@@ -55,6 +50,7 @@ public class AnimalController {
                            Model m) {
         Page<AnimalDto> animalPage = service.getAllAnimals(category,sortBy,page, size);
         List<AnimalDto> animalList = animalPage.getContent();
+        
         System.out.println(" HOME Animal List = "+animalList);
         m.addAttribute("allAnimalsList", animalList);
         m.addAttribute("currentPage", page);
